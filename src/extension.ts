@@ -8,10 +8,11 @@ const options = {
 	useExtendedSearch: true,
 	matchAllTokens: true,
 	threshold: 0.8,
-	// distance: 100,
-	keys: ['filePath', 'workspaceName']
+	keys: ['relFilePath', 'workspaceName']
 };
 const fuse = new Fuse([] as FileOption[], options);
+
+const maxResults = 25;
 
 const excludeFolders = [
 	".git",
@@ -53,23 +54,22 @@ export async function activate(context: vscode.ExtensionContext) {
 				}));
 			});
 
-		// await fs.writeFileSync("/tmp/workspace-files.json", JSON.stringify(files, null, 4));
 		fuse.setCollection(files);
 
 		const quickPick = vscode.window.createQuickPick();
-		quickPick.items = files.map((file) => createQuickItem(file));
+		quickPick.matchOnDetail = false;
+		quickPick.matchOnDescription = false;
+		(quickPick as any).sortByLabel = false;
+
+		quickPick.items = files.map((file) => createQuickItem(file)).slice(0, maxResults);
 
 		quickPick.onDidChangeValue((term) => {
 			console.log('searching for', term);
 
-			if (term === "") {
-				quickPick.items = files.map((file) => createQuickItem(file));
-			} else {
-				quickPick.items = fuse
-					.search(term, { limit: 25 })
-					.map((item) => item.item)
-					.map((file) => createQuickItem(file));
-			}
+			quickPick.items = fuse
+				.search(term, { limit: maxResults })
+				.map((item) => item.item)
+				.map((file) => createQuickItem(file));
 
 			if (quickPick.items.length > 0) {
 				quickPick.items[0].picked = true;
@@ -116,6 +116,7 @@ function createQuickItem(file: FileOption): UsefulQuickPickItem {
 		label: path.parse(file.filePath).base,
 		description: file.workspaceName,
 		detail: file.relFilePath,
+		alwaysShow: true,
 	};
 }
 
