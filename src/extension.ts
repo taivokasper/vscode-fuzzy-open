@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import Fuse from 'fuse.js';
+import { debounce } from "ts-debounce";
+
 
 const options = {
 	includeScore: true,
@@ -63,7 +65,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		quickPick.items = files.map((file) => createQuickItem(file)).slice(0, maxResults);
 
-		quickPick.onDidChangeValue((term) => {
+		const search = debounce(async (term: string) => {
+			quickPick.items.forEach((i) => i.picked = false);
+
 			quickPick.items = fuse
 				.search(term, { limit: maxResults })
 				.map((item) => item.item)
@@ -72,7 +76,9 @@ export async function activate(context: vscode.ExtensionContext) {
 			if (quickPick.items.length > 0) {
 				quickPick.items[0].picked = true;
 			}
-		});
+		}, 500);
+		quickPick.onDidChangeValue(search);
+		quickPick.onDidHide(() => search.cancel());
 
 		quickPick.onDidAccept(() => {
 			const selectedItems = quickPick.selectedItems;
@@ -92,6 +98,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 			quickPick.hide();
 		});
+
 
 		quickPick.show();
 	});
