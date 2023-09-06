@@ -1,7 +1,7 @@
 {
-  "name": "fuzzy-search-vectorized",
-  "displayName": "fuzzy-search-vectorized",
-  "description": "VSCode file search using vectors",
+  "name": "vscode-fuzzy-open",
+  "displayName": "vscode-fuzzy-open",
+  "description": "VSCode file open using fuzzy matching",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.81.0"
@@ -14,14 +14,14 @@
   "contributes": {
     "commands": [
       {
-        "command": "fuzzy-search-vectorized.smartFuzzyFind",
+        "command": "vscode-fuzzy-open.FuzzyOpen",
         "title": "Smart Fuzzy Find"
       }
     ],
     "keybindings": [
       {
-        "command": "fuzzy-search-vectorized.smartFuzzyFind",
-        "title": "Fuzzy search",
+        "command": "vscode-fuzzy-open.FuzzyOpen",
+        "title": "Fuzzy open",
         "key": "ctrl+k ctrl+f",
         "mac": "cmd+k cmd+f"
       }
@@ -32,6 +32,7 @@
     "compile": "webpack",
     "watch": "webpack --watch",
     "package": "webpack --mode production --devtool hidden-source-map",
+    "build-binary": "vsce package",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
@@ -42,10 +43,10 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
     "@types/vscode": "^1.81.0",
-    "@types/walk": "^2.3.1",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",
     "@vscode/test-electron": "^2.3.4",
+    "@vscode/vsce": "^2.21.0",
     "eslint": "^8.47.0",
     "glob": "^10.3.3",
     "mocha": "^10.2.0",
@@ -57,7 +58,6 @@
   "dependencies": {
     "@types/fuse": "^2.6.0",
     "fuse": "^0.4.0",
-    "fuse.js": "^6.6.2",
-    "walk": "^2.3.15"
+    "fuse.js": "^6.6.2"
   }
 }

@@ -10,7 +10,6 @@ const options = {
 	threshold: 0.8,
 	keys: ['relFilePath', 'workspaceName']
 };
-const fuse = new Fuse([] as FileOption[], options);
 
 const maxResults = 25;
 
@@ -32,12 +31,13 @@ const excludeFolders = [
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
+	const fuse = new Fuse([] as FileOption[], options);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "fuzzy-search-vectorized" is now active!');
+	console.log('Congratulations, your extension "vscode-fuzzy-open" is now active!');
 
-	const disposable = vscode.commands.registerCommand('fuzzy-search-vectorized.smartFuzzyFind', async () => {
+	const disposable = vscode.commands.registerCommand('vscode-fuzzy-open.FuzzyOpen', async () => {
 		const files = (vscode.workspace.workspaceFolders || [])
 			.map((folder) => ({
 				workspaceName: folder.name,
@@ -64,8 +64,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		quickPick.items = files.map((file) => createQuickItem(file)).slice(0, maxResults);
 
 		quickPick.onDidChangeValue((term) => {
-			console.log('searching for', term);
-
 			quickPick.items = fuse
 				.search(term, { limit: maxResults })
 				.map((item) => item.item)
@@ -133,4 +131,4 @@ function* readAllFiles(dir: string, exclude: string[]): Generator<string> {
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() { }
+export function deactivate() {}
