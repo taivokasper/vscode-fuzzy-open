@@ -11,4 +11,4 @@ yarn build-binary
 
 Install the *.vsix file at the root of the project.
 
-Press cmd+k + cmd+f to fuzzy open and files in your workspace or multi workspace project.
+Press cmd+k + cmd+f to fuzzy open any files in your workspace or multi workspace project.
