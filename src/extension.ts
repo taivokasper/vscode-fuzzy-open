@@ -90,11 +90,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 			const selectedItem = selectedItems[0] as UsefulQuickPickItem;
 
-			vscode.workspace
-				.openTextDocument(vscode.Uri.file(selectedItem.filePath))
-				.then((doc) => {
-					vscode.window.showTextDocument(doc);
-				});
+			openInEditor(selectedItem);
 
 			quickPick.hide();
 		});
@@ -113,7 +109,23 @@ interface FileOption {
 	relFilePath: string;
 }
 
-interface UsefulQuickPickItem extends vscode.QuickPickItem, FileOption {}
+interface UsefulQuickPickItem extends vscode.QuickPickItem, FileOption { }
+
+function openInEditor(selectedItem: UsefulQuickPickItem) {
+	if (['.ipynb'].includes(path.extname(selectedItem.filePath))) {
+		vscode.workspace
+			.openNotebookDocument(vscode.Uri.file(selectedItem.filePath))
+			.then((doc) => {
+				vscode.window.showNotebookDocument(doc);
+			});
+	} else {
+		vscode.workspace
+			.openTextDocument(vscode.Uri.file(selectedItem.filePath))
+			.then((doc) => {
+				vscode.window.showTextDocument(doc);
+			});
+	}
+}
 
 function createQuickItem(file: FileOption): UsefulQuickPickItem {
 	return {
@@ -138,4 +150,4 @@ function* readAllFiles(dir: string, exclude: string[]): Generator<string> {
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
