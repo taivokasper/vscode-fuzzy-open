@@ -3,6 +3,10 @@
   "displayName": "vscode-fuzzy-open",
   "description": "VSCode file open using fuzzy matching",
   "version": "0.0.1",
+  "repository": "https://github.com/taivokasper/vscode-fuzzy-open",
+  "author": "Taivo Käsper",
+  "publisher": "taivokasper",
+  "license": "MIT",
   "engines": {
     "vscode": "^1.81.0"
   },
